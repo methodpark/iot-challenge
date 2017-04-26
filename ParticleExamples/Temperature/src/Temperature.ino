@@ -12,20 +12,36 @@
 
 #include "Adafruit_Si7021.h"   // Use for Build IDE
 // #include "Adafruit_Si7021.h"               // Use for local build
+#include "MQTT.h"
+
+void callback(char* topic, byte* payload, unsigned int length);
 
 Adafruit_Si7021 sensor = Adafruit_Si7021();
-double t;
+MQTT client("10.10.100.232", 1883, callback);
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  return;
+}
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("Si7021 test");
   sensor.begin();
+  client.connect("particle");
 }
 
 void loop() {
-  float temp = sensor.readTemperature();
+  String temp = String(sensor.readTemperature());
   Serial.print("Humidity: "); Serial.println(sensor.readHumidity(), 2);
-  Serial.print("Temperature: "); Serial.println(temp, 2);
-  Particle.publish("temp", String(temp));
+  Serial.print("Temperature: "); Serial.println(temp);
+
+  // For webhooks
+  Particle.publish("temp", temp);
+
+  // mqtt
+  if (client.isConnected()) {
+      client.publish("iotChallenge/temp",temp);
+  }
+
   delay(10000);
 }
