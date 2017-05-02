@@ -14,6 +14,9 @@
 // #include "Adafruit_Si7021.h"               // Use for local build
 #include "MQTT.h"
 
+#define greenled D2
+#define redled D3
+
 void callback(char* topic, byte* payload, unsigned int length);
 
 Adafruit_Si7021 sensor = Adafruit_Si7021();
@@ -28,20 +31,33 @@ void setup() {
   Serial.println("Si7021 test");
   sensor.begin();
   client.connect("particle");
+  pinMode(redled, OUTPUT);
+  pinMode(greenled, OUTPUT);
 }
 
 void loop() {
-  String temp = String(sensor.readTemperature());
+  int temp_int = sensor.readTemperature();
+  String temp = String(temp_int);
   Serial.print("Humidity: "); Serial.println(sensor.readHumidity(), 2);
   Serial.print("Temperature: "); Serial.println(temp);
 
   // For webhooks
   Particle.publish("temp", temp);
 
+  if (temp_int >= 29) {
+    Serial.print("HIGH");
+    digitalWrite(redled, HIGH);
+    digitalWrite(greenled, LOW);
+  } else {
+    Serial.print("LOW");
+    digitalWrite(redled, LOW);
+    digitalWrite(greenled, HIGH);
+  }
+
   // mqtt
   if (client.isConnected()) {
       client.publish("iotChallenge/temp",temp);
   }
 
-  delay(10000);
+  delay(5000);
 }
