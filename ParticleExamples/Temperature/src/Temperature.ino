@@ -16,6 +16,7 @@
 
 #define GREEN_LED D2
 #define RED_LED D3
+#define ONBOARD_LED D7
 
 #define MQTT_BROKER "192.168.178.21"
 
@@ -35,6 +36,8 @@ void setup() {
   client.connect("particle");
   pinMode(RED_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
+  pinMode(ONBOARD_LED, OUTPUT);
+  digitalWrite(ONBOARD_LED, HIGH);
 }
 
 void loop() {
