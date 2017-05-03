@@ -14,8 +14,8 @@
 // #include "Adafruit_Si7021.h"               // Use for local build
 #include "MQTT.h"
 
-#define greenled D2
-#define redled D3
+#define GREEN_LED D2
+#define RED_LED D3
 
 void callback(char* topic, byte* payload, unsigned int length);
 
@@ -31,27 +31,25 @@ void setup() {
   Serial.println("Si7021 test");
   sensor.begin();
   client.connect("particle");
-  pinMode(redled, OUTPUT);
-  pinMode(greenled, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(GREEN_LED, OUTPUT);
 }
 
 void loop() {
-  int temp_int = sensor.readTemperature();
-  String temp = String(temp_int);
+  float temp_f = sensor.readTemperature();
+  String temp = String(temp_f, 2);
   Serial.print("Humidity: "); Serial.println(sensor.readHumidity(), 2);
   Serial.print("Temperature: "); Serial.println(temp);
 
   // For webhooks
   Particle.publish("temp", temp);
 
-  if (temp_int >= 29) {
-    Serial.print("HIGH");
-    digitalWrite(redled, HIGH);
-    digitalWrite(greenled, LOW);
+  if (temp_f >= 29) {
+    digitalWrite(RED_LED, HIGH);
+    digitalWrite(GREEN_LED, LOW);
   } else {
-    Serial.print("LOW");
-    digitalWrite(redled, LOW);
-    digitalWrite(greenled, HIGH);
+    digitalWrite(RED_LED, LOW);
+    digitalWrite(GREEN_LED, HIGH);
   }
 
   // mqtt
