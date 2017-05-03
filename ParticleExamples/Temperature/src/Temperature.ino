@@ -17,10 +17,12 @@
 #define GREEN_LED D2
 #define RED_LED D3
 
+#define MQTT_BROKER "192.168.178.21"
+
 void callback(char* topic, byte* payload, unsigned int length);
 
 Adafruit_Si7021 sensor = Adafruit_Si7021();
-MQTT client("10.10.100.232", 1883, callback);
+MQTT client(MQTT_BROKER, 1883, callback);
 
 void callback(char* topic, byte* payload, unsigned int length) {
   return;
