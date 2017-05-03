@@ -59,6 +59,7 @@ void loop() {
 
   // mqtt
   if (client.isConnected()) {
+      Serial.println("Publishing via mqtt");
       client.publish("iotChallenge/temp",temp);
   }
 
