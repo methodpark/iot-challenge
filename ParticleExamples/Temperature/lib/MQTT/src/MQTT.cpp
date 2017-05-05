@@ -80,7 +80,7 @@ void MQTT::setBroker(uint8_t *ip, uint16_t port) {
     if(isConnected()) {
         disconnect();
     }
-    this->domain = NULL;
+    this->domain = "";
     this->ip = ip;
     this->port = port;
 }
